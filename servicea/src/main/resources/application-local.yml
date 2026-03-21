@@ -1,0 +1,3 @@
+services:
+  serviceb:
+    url: ${SERVICE_B_URL:http://localhost:8081}
