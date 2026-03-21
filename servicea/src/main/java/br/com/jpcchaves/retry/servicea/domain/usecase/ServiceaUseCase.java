@@ -5,7 +5,6 @@ import br.com.jpcchaves.retry.servicea.domain.model.RetryMqEventModel;
 import br.com.jpcchaves.retry.servicea.port.input.ServiceaInputPort;
 import br.com.jpcchaves.retry.servicea.port.output.MqRetryOutputPort;
 import br.com.jpcchaves.retry.servicea.port.output.ServicebOutputPort;
-import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
