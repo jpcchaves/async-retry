@@ -22,7 +22,7 @@ public class MqMessageProducer {
     }
 
     public void produceWithDelay(String route, String payload, long delayMs) {
-        var message = MessageBuilder.withBody(payload.getBytes(StandardCharsets.UTF_8)).setHeader("x-delayed-message", delayMs).build();
+        var message = MessageBuilder.withBody(payload.getBytes(StandardCharsets.UTF_8)).setHeader("x-delay", delayMs).build();
         rabbitTemplate.convertAndSend(route, RETRY_ROUTING_KEY, message);
     }
 }

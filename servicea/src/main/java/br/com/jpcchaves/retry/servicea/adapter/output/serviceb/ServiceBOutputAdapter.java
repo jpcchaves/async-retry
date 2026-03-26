@@ -1,6 +1,6 @@
 package br.com.jpcchaves.retry.servicea.adapter.output.serviceb;
 
-import br.com.jpcchaves.retry.servicea.adapter.input.dto.ExampleRequestDTO;
+import br.com.jpcchaves.retry.servicea.adapter.input.rest.dto.ExampleRequestDTO;
 import br.com.jpcchaves.retry.servicea.port.output.ServicebOutputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package br.com.jpcchaves.retry.servicea.domain.usecase;
 
-import br.com.jpcchaves.retry.servicea.adapter.input.dto.ExampleRequestDTO;
+import br.com.jpcchaves.retry.servicea.adapter.input.rest.dto.ExampleRequestDTO;
 import br.com.jpcchaves.retry.servicea.domain.model.RetryMqEventModel;
 import br.com.jpcchaves.retry.servicea.port.input.ServiceaInputPort;
 import br.com.jpcchaves.retry.servicea.port.output.MqRetryOutputPort;

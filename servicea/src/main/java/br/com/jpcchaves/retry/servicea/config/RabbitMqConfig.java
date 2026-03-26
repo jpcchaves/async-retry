@@ -15,7 +15,7 @@ import java.util.HashMap;
 public class RabbitMqConfig {
 
     public static final String RETRY_EXCHANGE_NAME = "retry.exchange";
-    public static final String RETRY__QUEUE_NAME = "retry.queue";
+    public static final String RETRY_QUEUE_NAME = "retry.queue";
     public static final String RETRY_ROUTING_KEY = "example.retry";
 
     @Bean
@@ -34,7 +34,7 @@ public class RabbitMqConfig {
 
     @Bean
     public Queue retryQueue() {
-        return new Queue(RETRY__QUEUE_NAME);
+        return new Queue(RETRY_QUEUE_NAME);
     }
 
     @Bean

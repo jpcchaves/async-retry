@@ -1,4 +1,4 @@
-package br.com.jpcchaves.retry.servicea.adapter.input.dto;
+package br.com.jpcchaves.retry.servicea.adapter.input.rest.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
