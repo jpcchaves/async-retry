@@ -1,56 +1,49 @@
 package br.com.jpcchaves.retry.servicea.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.CustomExchange;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.HashMap;
 
 @Slf4j
 @Configuration
 public class RabbitMqConfig {
 
-    public static final String RETRY_LISTENER_QUEUE_NAME = "process.queue";
-    public static final String RETRY_QUEUE_5MIN_NAME = "process.retry.5m";
-    public static final String RETRY_QUEUE_1HR_NAME = "process.retry.1h";
-    public static final String RETRY_QUEUE_1D_NAME = "process.retry.1d";
-
-    public static final String DLQ = "process.dlq";
+    public static final String RETRY_EXCHANGE_NAME = "retry.exchange";
+    public static final String RETRY__QUEUE_NAME = "retry.queue";
+    public static final String RETRY_ROUTING_KEY = "example.retry";
 
     @Bean
-    public Queue retryListenerQueue() {
-        return QueueBuilder.durable(RETRY_LISTENER_QUEUE_NAME).build();
+    public CustomExchange retryExchange() {
+        var args = new HashMap<String, Object>();
+        args.put("x-delayed-type", "direct");
+
+        return new CustomExchange(
+                RETRY_EXCHANGE_NAME,
+                "x-delayed-message",
+                true,
+                false,
+                args
+        );
     }
 
     @Bean
-    public Queue retry5m() {
-        return QueueBuilder.durable(RETRY_QUEUE_5MIN_NAME)
-                .withArgument("x-message-ttl", 300000)
-                .withArgument("x-dead-letter-exchange", "")
-                .withArgument("x-dead-letter-routing-key", RETRY_LISTENER_QUEUE_NAME)
-                .build();
+    public Queue retryQueue() {
+        return new Queue(RETRY__QUEUE_NAME);
     }
 
     @Bean
-    public Queue retry1h() {
-        return QueueBuilder.durable(RETRY_QUEUE_1HR_NAME)
-                .withArgument("x-message-ttl", 3600000)
-                .withArgument("x-dead-letter-exchange", "")
-                .withArgument("x-dead-letter-routing-key", RETRY_LISTENER_QUEUE_NAME)
-                .build();
+    public Binding binding() {
+        return BindingBuilder
+                .bind(retryQueue())
+                .to(retryExchange())
+                .with(RETRY_ROUTING_KEY)
+                .noargs();
     }
 
-    @Bean
-    public Queue retry1d() {
-        return QueueBuilder.durable(RETRY_QUEUE_1D_NAME)
-                .withArgument("x-message-ttl", 86400000)
-                .withArgument("x-dead-letter-exchange", "")
-                .withArgument("x-dead-letter-routing-key", RETRY_LISTENER_QUEUE_NAME)
-                .build();
-    }
-
-    @Bean
-    public Queue dlq() {
-        return QueueBuilder.durable(DLQ).build();
-    }
 }

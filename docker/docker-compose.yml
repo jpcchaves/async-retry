@@ -1,6 +1,6 @@
 services:
   rabbitmq:
-    image: rabbitmq:management
+    build: .
     container_name: rabbitmq
     restart: always
     hostname: "rabbit"

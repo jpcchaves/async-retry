@@ -7,9 +7,15 @@ import br.com.jpcchaves.retry.servicea.port.output.MqRetryOutputPort;
 import br.com.jpcchaves.retry.servicea.port.output.ServicebOutputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static br.com.jpcchaves.retry.servicea.config.RabbitMqConfig.RETRY_EXCHANGE_NAME;
+import static br.com.jpcchaves.retry.servicea.domain.model.enums.RetryDuration.FIFTY_MINUTES;
 
 @Slf4j
 @Service
@@ -18,6 +24,7 @@ public class ServiceaUseCase implements ServiceaInputPort {
 
     private final ServicebOutputPort servicebOutputPort;
     private final MqRetryOutputPort mqRetryOutputPort;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Override
     public void processExample(ExampleRequestDTO requestDTO) {
@@ -25,13 +32,23 @@ public class ServiceaUseCase implements ServiceaInputPort {
         try {
             servicebOutputPort.processExampleServiceB(requestDTO);
         } catch (RuntimeException ex) {
-            var event = new RetryMqEventModel();
+
+            runAsyncRetry(requestDTO, ex);
+        }
+    }
+
+    @Async
+    private void runAsyncRetry(ExampleRequestDTO requestDTO, RuntimeException ex) {
+        executorService.execute(() -> {
+            var event = new RetryMqEventModel<ExampleRequestDTO>();
 
             event.setEventId(UUID.randomUUID().toString());
             event.setPayload(requestDTO);
-            event.setRetryCount(1);
+            event.setAttemptCount(1);
+            event.setLastException(ex);
+            event.getExceptions().add(ex);
 
-            mqRetryOutputPort.sendRetryToQueue(event);
-        }
+            mqRetryOutputPort.sendWithDelay(RETRY_EXCHANGE_NAME, event, FIFTY_MINUTES.getDurationMs());
+        });
     }
 }
