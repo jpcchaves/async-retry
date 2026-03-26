@@ -19,14 +19,11 @@ public class RabbitMqConfig {
 
     @Bean
     public Queue retryListenerQueue() {
-        log.info("Creating retry listener queue");
         return QueueBuilder.durable(RETRY_LISTENER_QUEUE_NAME).build();
     }
 
     @Bean
     public Queue retry5m() {
-        log.info("Creating 5m retry queue");
-
         return QueueBuilder.durable(RETRY_QUEUE_5MIN_NAME)
                 .withArgument("x-message-ttl", 300000)
                 .withArgument("x-dead-letter-exchange", "")
@@ -36,8 +33,6 @@ public class RabbitMqConfig {
 
     @Bean
     public Queue retry1h() {
-        log.info("Creating 1hr retry queue");
-
         return QueueBuilder.durable(RETRY_QUEUE_1HR_NAME)
                 .withArgument("x-message-ttl", 3600000)
                 .withArgument("x-dead-letter-exchange", "")
@@ -47,8 +42,6 @@ public class RabbitMqConfig {
 
     @Bean
     public Queue retry1d() {
-        log.info("Creating 1d retry queue");
-
         return QueueBuilder.durable(RETRY_QUEUE_1D_NAME)
                 .withArgument("x-message-ttl", 86400000)
                 .withArgument("x-dead-letter-exchange", "")
