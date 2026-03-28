@@ -25,7 +25,7 @@ public class MqMessageProducer {
         var message = MessageBuilder.withBody(payload.getBytes(StandardCharsets.UTF_8)).setHeader("x-delay", delayMs).build();
         try {
             rabbitTemplate.convertAndSend(route, RETRY_ROUTING_KEY, message);
-            log.info("Message sent to {} with delay {} and message: {}", route, delayMs, message);
+            log.info("Message sent to {} with delay {} and message: {}", route, delayMs, payload);
         } catch (Exception ex) {
             log.error("Error while send message to {} with message: {}", route, message, ex);
             throw ex;
