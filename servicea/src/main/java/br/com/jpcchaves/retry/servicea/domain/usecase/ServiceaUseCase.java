@@ -32,13 +32,13 @@ public class ServiceaUseCase implements ServiceaInputPort {
         try {
             servicebOutputPort.processExampleServiceB(requestDTO);
         } catch (RuntimeException ex) {
-
-            runAsyncRetry(requestDTO, ex);
+            log.error("An error ocurred while processing example. Request: {}", requestDTO, ex);
+            triggerAsyncRetry(requestDTO, ex);
         }
     }
 
     @Async
-    private void runAsyncRetry(ExampleRequestDTO requestDTO, RuntimeException ex) {
+    private void triggerAsyncRetry(ExampleRequestDTO requestDTO, RuntimeException ex) {
         executorService.execute(() -> {
             var event = new RetryMqEventModel<ExampleRequestDTO>();
 
