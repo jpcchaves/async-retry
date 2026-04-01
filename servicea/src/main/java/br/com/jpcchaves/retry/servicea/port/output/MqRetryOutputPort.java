@@ -6,6 +6,6 @@ public interface MqRetryOutputPort {
 
     <T> void send(String queueName, RetryMqEventModel<T> message);
 
-    <T> void sendWithDelay(String queueName, RetryMqEventModel<T> message, long delayMs);
+    <T> void sendWithDelay(String exchangeName, RetryMqEventModel<T> message, long delayMs);
 
 }

@@ -21,13 +21,13 @@ public class MqMessageProducer {
         rabbitTemplate.convertAndSend(route, event);
     }
 
-    public void produceWithDelay(String route, String payload, long delayMs) {
+    public void produceWithDelay(String exchangeName, String payload, long delayMs) {
         var message = MessageBuilder.withBody(payload.getBytes(StandardCharsets.UTF_8)).setHeader("x-delay", delayMs).build();
         try {
-            rabbitTemplate.convertAndSend(route, RETRY_ROUTING_KEY, message);
-            log.info("Message sent to {} with delay {} and message: {}", route, delayMs, payload);
+            rabbitTemplate.convertAndSend(exchangeName, RETRY_ROUTING_KEY, message);
+            log.info("Message sent to {} with delay {} and message: {}", exchangeName, delayMs, payload);
         } catch (Exception ex) {
-            log.error("Error while send message to {} with message: {}", route, message, ex);
+            log.error("Error while send message to {} with message: {}", exchangeName, message, ex);
             throw ex;
         }
     }

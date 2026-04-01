@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,8 +34,8 @@ public class ServiceaUseCase implements ServiceaInputPort {
         try {
             servicebOutputPort.processExampleServiceB(requestDTO);
         } catch (Exception ex) {
-            log.error("An error ocurred while processing example. Request: {}", requestDTO, ex);
-            triggerAsyncRetry(requestDTO, ex, 1, FIFTY_MINUTES.getDurationMs());
+            log.error("An error occurred while processing example. Request: {}", requestDTO, ex);
+            triggerAsyncRetry(requestDTO, null, ex, 1, FIFTY_MINUTES.getDurationMs());
         }
     }
 
@@ -44,7 +45,7 @@ public class ServiceaUseCase implements ServiceaInputPort {
         try {
             servicebOutputPort.processExampleServiceB(eventMessage.getPayload());
         } catch (Exception ex) {
-            log.error("An error ocurred while processing retry. Request: {}", eventMessage, ex);
+            log.error("An error occurred while processing retry. Request: {}", eventMessage, ex);
             var currentAttempt = eventMessage.getAttemptCount() + 1;
 
             log.info("Current attempt count {}", currentAttempt);
@@ -56,22 +57,34 @@ public class ServiceaUseCase implements ServiceaInputPort {
             }
 
             var delayMs = RetryDuration.getDelayFromRetryCount(currentAttempt);
-            log.info("Delay ms {}", delayMs);
+            log.info("Next retry will have delay {} ms", delayMs);
 
-            triggerAsyncRetry(eventMessage.getPayload(), ex, currentAttempt, delayMs);
+            triggerAsyncRetry(eventMessage.getPayload(), eventMessage, ex, currentAttempt, delayMs);
         }
     }
 
     @Async
-    private void triggerAsyncRetry(ExampleRequestDTO requestDTO, Exception ex, int currentAttempt, int delayMs) {
+    private void triggerAsyncRetry(
+            ExampleRequestDTO requestDTO,
+            RetryMqEventModel<ExampleRequestDTO> eventMessage,
+            Exception ex,
+            int currentAttempt,
+            int delayMs
+    ) {
         executorService.execute(() -> {
             log.info("Executing async retry. Request: {}", requestDTO);
-            var event = new RetryMqEventModel<ExampleRequestDTO>();
+            var event = RetryMqEventModel.<ExampleRequestDTO>builder()
+                    .eventId(UUID.randomUUID().toString())
+                    .attemptCount(currentAttempt)
+                    .lastException(ex)
+                    .payload(requestDTO)
+                    .exceptions(new ArrayList<>())
+                    .build();
 
-            event.setEventId(UUID.randomUUID().toString());
-            event.setPayload(requestDTO);
-            event.setAttemptCount(currentAttempt);
-            event.setLastException(ex);
+            if (eventMessage != null) {
+                event.getExceptions().addAll(eventMessage.getExceptions());
+            }
+
             event.getExceptions().add(ex);
 
             mqRetryOutputPort.sendWithDelay(RETRY_EXCHANGE_NAME, event, delayMs);

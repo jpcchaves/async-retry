@@ -19,7 +19,7 @@ public class MqRetryProducer implements MqRetryOutputPort {
     }
 
     @Override
-    public <T> void sendWithDelay(String queueName, RetryMqEventModel<T> message, long delayMs) {
-        mqMessageProducer.produceWithDelay(queueName, objectMapper.writeValueAsString(message), delayMs);
+    public <T> void sendWithDelay(String exchangeName, RetryMqEventModel<T> message, long delayMs) {
+        mqMessageProducer.produceWithDelay(exchangeName, objectMapper.writeValueAsString(message), delayMs);
     }
 }
