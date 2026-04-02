@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 
-import static br.com.jpcchaves.retry.servicea.config.RabbitMqConfig.RETRY_ROUTING_KEY;
+import static br.com.jpcchaves.retry.servicea.config.RabbitMqRetryConfig.RETRY_ROUTING_KEY;
 
 @Slf4j
 @Component

@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static br.com.jpcchaves.retry.servicea.config.RabbitMqConfig.RETRY_EXCHANGE_NAME;
+import static br.com.jpcchaves.retry.servicea.config.RabbitMqRetryConfig.RETRY_EXCHANGE_NAME;
 import static br.com.jpcchaves.retry.servicea.domain.model.enums.RetryDuration.FIFTY_MINUTES;
 
 @Slf4j

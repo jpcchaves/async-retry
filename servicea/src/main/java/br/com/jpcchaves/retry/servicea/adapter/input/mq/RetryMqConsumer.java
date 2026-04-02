@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
-import static br.com.jpcchaves.retry.servicea.config.RabbitMqConfig.RETRY_QUEUE_NAME;
+import static br.com.jpcchaves.retry.servicea.config.RabbitMqRetryConfig.RETRY_QUEUE_NAME;
 
 @Slf4j
 @Component
