@@ -4,8 +4,7 @@ import br.com.jpcchaves.retry.servicea.domain.model.RetryMqEventModel;
 
 public interface MqRetryOutputPort {
 
-    <T> void send(String queueName, RetryMqEventModel<T> message);
+    <T> void send(String exchangeName, String routingKey, RetryMqEventModel<T> message);
 
-    <T> void sendWithDelay(String exchangeName, RetryMqEventModel<T> message, long delayMs);
-
+    <T> void sendWithDelay(String exchangeName, String routingKey, RetryMqEventModel<T> message, long delayMs);
 }

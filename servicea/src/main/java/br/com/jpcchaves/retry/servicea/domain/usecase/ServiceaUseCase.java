@@ -16,8 +16,8 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static br.com.jpcchaves.retry.servicea.config.RabbitMqRetryConfig.RETRY_EXCHANGE_NAME;
-import static br.com.jpcchaves.retry.servicea.domain.model.enums.RetryDuration.FIFTY_MINUTES;
+import static br.com.jpcchaves.retry.servicea.config.RabbitMqRetryConfig.*;
+import static br.com.jpcchaves.retry.servicea.domain.model.enums.RetryDuration.FIVE_MINUTES;
 
 @Slf4j
 @Service
@@ -35,7 +35,7 @@ public class ServiceaUseCase implements ServiceaInputPort {
             servicebOutputPort.processExampleServiceB(requestDTO);
         } catch (Exception ex) {
             log.error("An error occurred while processing example. Request: {}", requestDTO, ex);
-            triggerAsyncRetry(requestDTO, null, ex, 1, FIFTY_MINUTES.getDurationMs());
+            triggerAsyncRetry(requestDTO, null, ex, 1, FIVE_MINUTES.getDurationMs());
         }
     }
 
@@ -53,6 +53,7 @@ public class ServiceaUseCase implements ServiceaInputPort {
             if (currentAttempt > 3) {
                 // send to DLQ
                 log.info("Maximum attempts reached. Sending message to DLQ: {}", eventMessage);
+                mqRetryOutputPort.send(DQL_RETRY_EXCHANGE_NAME, DLQ_RETRY_ROUTING_KEY, eventMessage);
                 return;
             }
 
@@ -87,7 +88,7 @@ public class ServiceaUseCase implements ServiceaInputPort {
 
             event.getExceptions().add(ex);
 
-            mqRetryOutputPort.sendWithDelay(RETRY_EXCHANGE_NAME, event, delayMs);
+            mqRetryOutputPort.sendWithDelay(RETRY_EXCHANGE_NAME, RETRY_ROUTING_KEY, event, delayMs);
         });
     }
 }

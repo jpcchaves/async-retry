@@ -6,9 +6,9 @@ import java.util.Arrays;
 
 @Getter
 public enum RetryDuration {
-    FIFTY_MINUTES(1, 60),
-    ONE_HOUR(2, 120),
-    SIX_HOURS(3, 180);
+    FIVE_MINUTES(1, 300000),
+    ONE_HOUR(2, 3600000),
+    SIX_HOURS(3, 21600000);
 
     private final int retryCount;
     private final int durationMs;
