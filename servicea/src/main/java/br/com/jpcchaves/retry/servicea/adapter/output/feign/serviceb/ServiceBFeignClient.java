@@ -1,6 +1,7 @@
-package br.com.jpcchaves.retry.servicea.adapter.output.serviceb;
+package br.com.jpcchaves.retry.servicea.adapter.output.feign.serviceb;
 
 import br.com.jpcchaves.retry.servicea.adapter.input.rest.dto.ExampleRequestDTO;
+import br.com.jpcchaves.retry.servicea.adapter.output.feign.serviceb.dto.CreditCheckReturnDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,5 +10,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface ServiceBFeignClient {
 
     @PostMapping
-    void processExampleServiceB(@RequestBody ExampleRequestDTO requestDTO);
+    CreditCheckReturnDTO processExampleServiceB(@RequestBody ExampleRequestDTO requestDTO);
 }

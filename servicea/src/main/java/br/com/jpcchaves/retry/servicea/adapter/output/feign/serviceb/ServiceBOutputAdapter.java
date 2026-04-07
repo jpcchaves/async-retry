@@ -1,4 +1,4 @@
-package br.com.jpcchaves.retry.servicea.adapter.output.serviceb;
+package br.com.jpcchaves.retry.servicea.adapter.output.feign.serviceb;
 
 import br.com.jpcchaves.retry.servicea.adapter.input.rest.dto.ExampleRequestDTO;
 import br.com.jpcchaves.retry.servicea.port.output.ServicebOutputPort;
