@@ -25,6 +25,6 @@ public class ServiceaController {
         log.info("Receiving example request. Request: {}", requestDTO);
         serviceaInputPort.processExample(requestDTO);
         log.info("Example request processed. Request: {}", requestDTO);
-        return ResponseEntity.accepted().build();
+        return ResponseEntity.ok().build();
     }
 }
