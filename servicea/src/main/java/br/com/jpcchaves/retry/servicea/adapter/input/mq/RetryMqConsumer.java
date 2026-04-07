@@ -23,11 +23,8 @@ public class RetryMqConsumer {
 
     @RabbitListener(queues = RETRY_QUEUE_NAME)
     public void consume(Message message) {
-        log.info("Received retry message {}", message);
-
         var messageParsed = getMessageParsed(message);
-
-        log.info("Message parsed {}", messageParsed);
+        log.info("Retry message received to be reprocessed: {}", messageParsed);
         serviceaInputPort.processRetryExample(messageParsed);
     }
 
