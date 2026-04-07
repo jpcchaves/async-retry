@@ -31,8 +31,8 @@ public class MqMessageProducer {
         var message = MessageBuilder.withBody(payload.getBytes(StandardCharsets.UTF_8)).setHeader("x-delay", delayMs).build();
         try {
             rabbitTemplate.convertAndSend(exchangeName, routingKey, message);
-            log.info("Message sent to exchange {} and routingKey {} with delay {} and scheduled to be consumed at {} and message {}",
-                    exchangeName, routingKey, delayMs, LocalDateTime.now().plus(delayMs, ChronoUnit.MILLIS), payload);
+            log.info("Message sent to exchange {} and routingKey {} with delay {} and scheduled to be consumed at {}",
+                    exchangeName, routingKey, delayMs, LocalDateTime.now().plus(delayMs, ChronoUnit.MILLIS));
         } catch (Exception ex) {
             log.error("Error while send message to exchange {} and routingKey {} with message: {}", exchangeName, routingKey, message, ex);
             throw ex;

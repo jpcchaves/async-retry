@@ -2,6 +2,7 @@ package br.com.jpcchaves.retry.serviceb.adapter.input.rest;
 
 import br.com.jpcchaves.retry.serviceb.adapter.input.rest.dto.CreditCheckReturnDTO;
 import br.com.jpcchaves.retry.serviceb.adapter.input.rest.dto.ExampleRequestDTO;
+import br.com.jpcchaves.retry.serviceb.port.input.ServicebInputPort;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/serviceb")
 public class ServicebController {
 
+    private final ServicebInputPort servicebInputPort;
 
     @PostMapping
     public ResponseEntity<CreditCheckReturnDTO> getCreditCheck(@RequestBody ExampleRequestDTO requestDTO) {
         log.info("Credit check request received. Request: {}", requestDTO);
-
-        log.info("Credit check request processed. Response: {}", "");
-        return ResponseEntity.ok().build();
+        var response = servicebInputPort.getCreditCheck(requestDTO);
+        log.info("Credit check request processed. Response: {}", response);
+        return ResponseEntity.ok(response);
     }
 }

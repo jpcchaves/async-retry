@@ -77,7 +77,7 @@ public class ServiceaUseCase implements ServiceaInputPort {
             var event = RetryMqEventModel.<ExampleRequestDTO>builder()
                     .eventId(UUID.randomUUID().toString())
                     .attemptCount(currentAttempt)
-                    .lastException(ex)
+                    .lastException(ex.getCause())
                     .payload(requestDTO)
                     .exceptions(new ArrayList<>())
                     .build();
@@ -86,7 +86,7 @@ public class ServiceaUseCase implements ServiceaInputPort {
                 event.getExceptions().addAll(eventMessage.getExceptions());
             }
 
-            event.getExceptions().add(ex);
+            event.getExceptions().add(ex.getCause());
 
             mqRetryOutputPort.sendWithDelay(RETRY_EXCHANGE_NAME, RETRY_ROUTING_KEY, event, delayMs);
         });
