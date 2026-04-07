@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name = "ServiceBFeignClient", url = "${services.serviceb.url}")
 public interface ServiceBFeignClient {
 
-    @PostMapping
+    @PostMapping("/api/v1/serviceb")
     CreditCheckReturnDTO processExampleServiceB(@RequestBody ExampleRequestDTO requestDTO);
 }
